@@ -13,7 +13,7 @@
  * the page carries an older one, so a page picks the fix up on the next edit.
  */
 
-export const VERSION = 1;
+export const VERSION = 2;
 
 /** Every effect, as one keyframes rule each. The value of `data-animate`. */
 const EFFECTS = {
@@ -25,6 +25,7 @@ const EFFECTS = {
 	"zoom-in": "from{opacity:0;transform:scale3d(.86,.86,1)}to{opacity:1;transform:none}",
 	"zoom-out": "from{opacity:0;transform:scale3d(1.14,1.14,1)}to{opacity:1;transform:none}",
 	"flip-up": "from{opacity:0;transform:perspective(900px) rotateX(28deg)}to{opacity:1;transform:none}",
+	"flip-down": "from{opacity:0;transform:perspective(900px) rotateX(-28deg)}to{opacity:1;transform:none}",
 	"blur-in": "from{opacity:0;filter:blur(12px)}to{opacity:1;filter:none}",
 	pop: "0%{opacity:0;transform:scale3d(.8,.8,1)}60%{opacity:1;transform:scale3d(1.04,1.04,1)}100%{transform:none}",
 };
@@ -95,7 +96,8 @@ const main = function (SHEET, EASINGS) {
 	var arm = function (node, settings) {
 		if (settings.duration) node.style.setProperty("--anim-d", settings.duration + "ms");
 		if (settings.delay) node.style.setProperty("--anim-w", settings.delay + "ms");
-		if (settings.ease && EASINGS[settings.ease]) node.style.setProperty("--anim-e", EASINGS[settings.ease]);
+		var easing = EASINGS[settings.ease] || (settings.ease || "").match(/^cubic-bezier\([^)]*\)$/) && settings.ease;
+		if (easing) node.style.setProperty("--anim-e", easing);
 		node.classList.add("anim-armed");
 	};
 

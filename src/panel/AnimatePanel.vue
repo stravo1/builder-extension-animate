@@ -1,5 +1,5 @@
 <template>
-	<div class="flex h-full flex-col gap-4 overflow-y-auto bg-surface-base p-3 text-ink-gray-8">
+	<div class="flex h-full flex-col gap-4 overflow-y-auto bg-surface p-3 text-ink-gray-8">
 		<p v-if="!blockId" class="pt-2 text-p-sm italic text-ink-gray-5">Select a block to animate it.</p>
 
 		<template v-else>
@@ -19,53 +19,45 @@
 				<section class="flex flex-col gap-2">
 					<h3 class="text-p-xs font-medium uppercase tracking-wide text-ink-gray-5">Trigger</h3>
 					<div class="grid grid-cols-2 gap-1.5">
-						<button
+						<Button
 							v-for="option in TRIGGERS"
 							:key="option.value"
-							type="button"
 							:title="option.hint"
-							class="rounded-md px-2 py-1.5 text-p-sm transition-colors"
+							size="sm"
+							:variant="option.value === settings.trigger ? 'subtle' : 'ghost'"
+							class="w-full"
 							:class="
 								option.value === settings.trigger
-									? 'bg-surface-gray-3 text-ink-gray-9'
-									: 'bg-surface-gray-1 text-ink-gray-6 hover:bg-surface-gray-2'
+									? 'text-ink-gray-9'
+									: 'text-ink-gray-6'
 							"
-							@click="settings.trigger = option.value">
-							{{ option.label }}
-						</button>
+							:label="option.label"
+							@click="settings.trigger = option.value" />
 					</div>
 				</section>
 
-				<SliderRow
-v-model="settings.duration" label="Duration" :min="100"
-:max="2000"
-:step="50" />
-				<SliderRow
-v-model="settings.delay" label="Delay" :min="0"
-:max="1500"
-:step="50" />
+				<SliderRow v-model="settings.duration" label="Duration" :min="100" :max="2000" :step="50" />
+				<SliderRow v-model="settings.delay" label="Delay" :min="0" :max="1500" :step="50" />
 
-				<label class="flex items-center justify-between gap-2">
+				<div class="flex items-center justify-between gap-2">
 					<span class="text-p-sm text-ink-gray-6">Easing</span>
-					<select
-						v-model="settings.easing"
-						class="w-32 rounded border-none bg-surface-gray-2 py-1 text-p-sm text-ink-gray-8">
-						<option v-for="option in EASINGS" :key="option.value" :value="option.value">
-							{{ option.label }}
-						</option>
-					</select>
-				</label>
+					<Select
+						v-model="easingMode"
+						:options="[...EASINGS, { label: 'Custom curve', value: 'custom' }]"
+						class="w-32"
+						size="sm" />
+				</div>
 
-				<label class="flex items-center justify-between gap-2">
+				<BezierEditor v-model="settings.easing" />
+
+				<div class="flex items-center justify-between gap-2">
 					<span class="text-p-sm text-ink-gray-6">Repeat</span>
-					<select
+					<Select
 						v-model="settings.repeat"
-						class="w-32 rounded border-none bg-surface-gray-2 py-1 text-p-sm text-ink-gray-8">
-						<option v-for="option in REPEATS" :key="option.value" :value="option.value">
-							{{ option.label }}
-						</option>
-					</select>
-				</label>
+						:options="REPEATS"
+						class="w-32"
+						size="sm" />
+				</div>
 
 				<p class="text-p-xs text-ink-gray-5">
 					Animations run on the published page, not on the canvas. The tile above is the preview.
@@ -89,10 +81,12 @@ v-model="settings.delay" label="Delay" :min="0"
  */
 import builder from "frappe-builder-extension-sdk";
 import { useBuilderContext } from "frappe-builder-extension-sdk/vue";
-import { Button } from "frappe-ui";
+import { Button, Select } from "frappe-ui";
 import { computed, reactive, ref, watch } from "vue";
 import { DEFAULTS, EASINGS, REPEATS, TRIGGERS, readSettings, toAttributes } from "../animation.js";
+import { EASING_VALUES } from "../runtime.js";
 import AnimationPreview from "./AnimationPreview.vue";
+import BezierEditor from "./BezierEditor.vue";
 import EffectGrid from "./EffectGrid.vue";
 import SliderRow from "./SliderRow.vue";
 
@@ -100,6 +94,12 @@ const context = useBuilderContext(["selection", "readOnly"]);
 const blockId = computed(() => context.selection.blockId);
 
 const settings = reactive({ ...DEFAULTS });
+const easingMode = computed({
+	get: () => (EASINGS.some((option) => option.value === settings.easing) ? settings.easing : "custom"),
+	set: (value) => {
+		settings.easing = value === "custom" ? EASING_VALUES[settings.easing] || settings.easing : value;
+	},
+});
 /** True while the block is being read, so filling the form does not write it back. */
 const loading = ref(false);
 

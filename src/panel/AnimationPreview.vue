@@ -38,7 +38,7 @@ const props = defineProps({
 });
 
 const tile = ref(null);
-const easingValue = computed(() => EASING_VALUES[props.easing]);
+const easingValue = computed(() => EASING_VALUES[props.easing] || props.easing);
 
 // the frame is its own document, so it carries its own copy of the sheet
 onMounted(() => {

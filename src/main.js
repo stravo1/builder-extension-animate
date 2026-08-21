@@ -100,18 +100,18 @@ builder.actions.register("animate.report", async () => {
 builder.leftPanel.register({
 	name: "animate",
 	label: "Animate",
-	icon: "lucide-wand-sparkles",
+	icon: "lucide-spline-pointer",
 	// the whole feature, with a preview the canvas cannot give
 	load: () => import("./panel/index.js"),
 });
 
-builder.toolbar.register({
-	name: "report",
-	region: "right",
-	icon: "lucide-wand-sparkles",
-	tooltip: "Count the animated blocks on this page",
-	action: "animate.report",
-});
+// builder.toolbar.register({
+// 	name: "report",
+// 	region: "right",
+// 	icon: "lucide-wand-sparkles",
+// 	tooltip: "Count the animated blocks on this page",
+// 	action: "animate.report",
+// });
 
 // a subscription only reports a change, so the route the editor opened with has
 // to be read once

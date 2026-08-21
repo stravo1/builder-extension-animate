@@ -2,6 +2,7 @@
 	"v": 1,
 	"name": "builder/animate",
 	"label": "Animate",
+	"description": "Add scroll and entrance animations.",
 	"version": "1.0.0",
 	"icon": "icon.svg",
 	"capabilities": ["context.read", "block.read", "block.update", "page.read", "page.write"]

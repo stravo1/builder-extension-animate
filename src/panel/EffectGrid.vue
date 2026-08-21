@@ -1,14 +1,15 @@
 <template>
 	<div class="grid grid-cols-3 gap-1.5">
-		<button
+		<Button
 			v-for="option in EFFECTS"
 			:key="option.value"
-			type="button"
-			class="flex flex-col items-center gap-1 rounded-md border p-2 text-p-xs transition-colors"
+			variant="ghost"
+			size="sm"
+			class="h-auto w-full flex-col gap-1 border p-2 text-p-xs"
 			:class="
 				option.value === modelValue
-					? 'border-outline-gray-4 bg-surface-gray-2 text-ink-gray-9'
-					: 'border-transparent bg-surface-gray-1 text-ink-gray-6 hover:bg-surface-gray-2'
+					? 'border-outline-gray-5 bg-surface-gray-3 text-ink-gray-9 ring-1 ring-outline-gray-5'
+					: 'border-outline-gray-2 bg-surface-gray-1 text-ink-gray-6 hover:bg-surface-gray-2'
 			"
 			@mouseenter="replay"
 			@click="$emit('update:modelValue', option.value)">
@@ -22,7 +23,7 @@
 			</span>
 			<!-- wraps rather than truncates: "Fade do…" names nothing -->
 			<span class="w-full text-center leading-tight">{{ option.label }}</span>
-		</button>
+		</Button>
 	</div>
 </template>
 
@@ -32,6 +33,7 @@
  * the chip runs exactly what the published page will run.
  */
 import { EFFECTS } from "../animation.js";
+import { Button } from "frappe-ui";
 
 defineProps({ modelValue: { type: String, default: "none" } });
 defineEmits(["update:modelValue"]);
