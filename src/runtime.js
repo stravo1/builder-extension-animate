@@ -55,7 +55,7 @@ const effectRules = () =>
  * JavaScript failed then sees the page rather than a column of invisible
  * blocks.
  *
- * Exported because the left panel replays an animation in its own document, and
+ * Exported because the popover replays an animation in its own document, and
  * a second copy of these keyframes would drift from the page's.
  */
 export const styles = () =>

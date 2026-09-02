@@ -2,7 +2,7 @@
  * The vocabulary every part of this extension reads.
  *
  * One block attribute per setting, and one list of them. The right panel
- * section, the left panel, the clear action and the runtime on the published
+ * section, the popover, the clear action and the runtime on the published
  * page all name a setting through this file, so a rename is one edit.
  *
  * A setting at its default writes no attribute. The runtime falls back to the

@@ -10,9 +10,9 @@
  * editor canvas, so nothing moves while you edit: the panel shows what a block
  * is set to, and the published page shows what it does.
  *
- * The left panel is the only surface that writes those attributes. It reads a
+ * The popover is the only surface that writes those attributes. It reads a
  * block once, when the selection moves, so a second editor for the same six
- * values would leave the panel showing what the block no longer says.
+ * values would leave the popover showing what the block no longer says.
  *
  * The runtime lands on a page the first time somebody animates a block on it,
  * never at startup. A page nobody animated carries no script of ours.
@@ -20,6 +20,12 @@
 
 import builder from "frappe-builder-extension-sdk";
 import "./index.css";
+
+import { vueAdapter } from "frappe-builder-extension-sdk/vue";
+
+// how a component becomes DOM, named once. The SDK ships no framework
+builder.use(vueAdapter);
+
 
 import { VERSION, runtimeScript } from "./runtime.js";
 
@@ -80,7 +86,7 @@ builder.actions.register("animate.touched", async () => {
 });
 
 /** What the page will do, counted from the tree rather than guessed. */
-builder.actions.register("animate.report", async () => {
+const report = async () => {
 	const walk = (block) => [block, ...(block.children ?? []).flatMap(walk)];
 	const blocks = (await builder.page.getBlocks()).flatMap(walk);
 	const animated = blocks.filter((block) => {
@@ -95,22 +101,31 @@ builder.actions.register("animate.report", async () => {
 			: "Nothing here is animated. Select a block and pick an effect in the Animate panel.",
 		animated.length ? { type: "success" } : {},
 	);
-});
+};
 
-builder.leftPanel.register({
-	name: "animate",
-	label: "Animate",
-	icon: "lucide-spline-pointer",
-	// the whole feature, with a preview the canvas cannot give
-	load: () => import("./panel/index.js"),
-});
+builder.popover.register({ component: () => import("./panel/AnimatePanel.vue") });
+
+// what the Open button in this extension's details pane opens
+builder.open.register({ kind: "popover" });
+
+const open = () => builder.ui.openPopover({ title: "Animate" });
+
+// a button carries its function, and the SDK holds it under the button's name.
+// `animate.touched` above keeps a name, because the panel frame runs it by name
+// builder.toolbar.register({
+// 	name: "animate",
+// 	region: "right",
+// 	icon: "lucide-spline-pointer",
+// 	tooltip: "Animate selected block",
+// 	action: open,
+// });
 
 // builder.toolbar.register({
 // 	name: "report",
 // 	region: "right",
 // 	icon: "lucide-wand-sparkles",
 // 	tooltip: "Count the animated blocks on this page",
-// 	action: "animate.report",
+// 	action: report,
 // });
 
 // a subscription only reports a change, so the route the editor opened with has

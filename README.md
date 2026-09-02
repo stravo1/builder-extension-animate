@@ -2,7 +2,7 @@
 
 Scroll, hover, click and load animations for any block, with no code.
 
-Open the **Animate** tab in the left panel and select a block. Pick an effect from the grid, set the
+Open the **Animate** popover from the extension details and select a block. Pick an effect from the grid, set the
 trigger and the timing, and watch it replay in the preview tile at the top.
 
 | Setting | Attribute it writes | Values |
@@ -17,8 +17,6 @@ trigger and the timing, and watch it replay in the preview tile at the top.
 A setting left at its default writes no attribute, so a block with a plain fade carries one
 attribute rather than six. Choosing **None** takes all of them off.
 
-The toolbar button counts the animated blocks on the page.
-
 ## The two halves
 
 The editor half writes attributes on a block. It never touches the tree beyond that: `block.update`
@@ -28,17 +26,17 @@ The published half is one client script, which the extension puts on the page th
 somebody animates a block on it. The script reads those attributes, wires the triggers, and adds the
 classes that run each animation.
 
-Nothing moves in the editor canvas. A client script does not run there, so the panel is the only
+Nothing moves in the editor canvas. A client script does not run there, so the popover is the only
 place an animation can be seen before the page is published — which is what the preview tile is for.
 It replays from the same keyframes the published page uses, so what you see is what ships.
 
-## One panel, and no second editor
+## One popover, and no second editor
 
-The panel reads a block once, when the selection moves, and writes on every change. A second surface
-editing the same six values — a property section, a context menu row — would leave the panel showing
+The popover reads a block once, when the selection moves, and writes on every change. A second surface
+editing the same six values — a property section, a context menu row — would leave the popover showing
 what the block no longer says, because nothing pushes an attribute change back to a frame.
 
-So the panel is the only thing that writes them. The toolbar button only counts.
+So the popover is the only thing that writes them.
 
 ## What the script does
 
@@ -59,12 +57,12 @@ older one, so a page picks up a fix the next time somebody edits it.
 page, and remembers nothing. The user can read, edit, or delete the script in the editor's Code tab,
 and uninstalling the extension removes it.
 
-`block.read` and `block.update` are what the panel needs to read and write a block. `context.read`
-is how it follows the selection. `page.read` is what the toolbar count needs.
+`block.read` and `block.update` are what the popover needs to read and write a block. `context.read`
+is how it follows the selection. `page.read` supports page-wide animation reporting.
 
 ## Build and install
 
-The panel is a Vue frame, so this one needs a build. The other samples do not.
+The popover is a Vue frame, so it needs a build.
 
 ```sh
 cd frontend/extension-sdk/samples/animate
@@ -86,3 +84,14 @@ cd sites
 Run `yarn build` again after every edit, then install again.
 
 For live reloading instead, run `yarn dev` and load the dev server URL from the Extensions panel.
+
+## Package a release
+
+```sh
+yarn build
+yarn package
+```
+
+The package command validates the repository and writes
+`release/builder-animate-1.0.0.builderext`. Push a tag matching the manifest version exactly to let
+the release workflow publish that package.
