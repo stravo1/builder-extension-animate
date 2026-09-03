@@ -66,8 +66,8 @@ The popover is a Vue frame, so it needs a build.
 
 ```sh
 cd frontend/extension-sdk/samples/animate
-yarn install
-yarn build
+npm install
+npm run build
 ```
 
 `vite.config.js` names `http://builder.localhost:8080` as the Builder origin. Change it if your bench
@@ -81,17 +81,17 @@ cd sites
 ../env/bin/python ../apps/builder/frontend/extension-sdk/samples/install.py builder.localhost
 ```
 
-Run `yarn build` again after every edit, then install again.
+Run `npm run build` again after every edit, then install again.
 
-For live reloading instead, run `yarn dev` and load the dev server URL from the Extensions panel.
+For live reloading instead, run `npm run dev` and load the dev server URL from the Extensions panel.
 
 ## Package a release
 
 ```sh
-yarn build
-yarn package
+npm run build
+npm run package
 ```
 
 The package command validates the repository and writes
-`release/builder-animate-1.0.0.builderext`. Push a tag matching the manifest version exactly to let
-the release workflow publish that package.
+`release/builder-animate-1.0.0.builderext`. Push `v1.0.0`, or create a GitHub release
+with that tag, to let the release workflow publish that package.
