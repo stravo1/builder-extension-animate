@@ -177,7 +177,7 @@ const main = function (SHEET, EASINGS) {
 /** The whole client script, ready to hand to `page.attachScript`. */
 export const runtimeScript = () =>
 	[
-		`/* builder/animate runtime v${VERSION} — written by the Animate extension. */`,
+		`/* stravo1/animate runtime v${VERSION} — written by the Animate extension. */`,
 		"/* Edit it here and the extension will rewrite it. Delete the extension to remove it. */",
 		`(${String(main)})(${JSON.stringify(styles())},${JSON.stringify(EASINGS)});`,
 	].join("\n");
